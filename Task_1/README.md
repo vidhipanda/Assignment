@@ -9,8 +9,9 @@ This task has 4 parts:
 3. Create docker image.
 4. Push docker image to dockerhub using terraform.
 
-Here 
+Here,
 app.py --> simple python hello world program.
+
 Dockerfile --> Used to create the docker image.
 
 Terraform files --> [main.tf , terraform.tfvars, vars.tf] are the tf files used to push the docker image to docker hub

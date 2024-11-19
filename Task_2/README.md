@@ -1,0 +1,13 @@
+TASK: 
+Build a 3-tier VPC with public and private subnets in each availability zone and deploy an EKS cluster in the above VPC.
+
+Solution:
+
+Once you create the main.tf, output and vars.tf file do a terraform init, plan and apply --> this will create vpc in the specified aws region.
+
+To configure and deploy eks cluster onto that vpc we need to run the following commands.
+1.  aws eks --region us-east-1 update-kubeconfig --name rattle-eks-cluster.
+    # To verifiy the nodes run
+     kubectl get nodes
+2. To deploy apps run
+     kubectl apply -f https://k8s.io/examples/application/deployment.yaml

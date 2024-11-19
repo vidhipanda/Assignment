@@ -1,0 +1,1 @@
+Write a python/perl/golang script  which takes a list of SSL secured domain names and port as an input, check if the SSL certificate is getting expired in less than 15 days, send an email or slack alert if the SSL certificate is getting expired in days < 15.

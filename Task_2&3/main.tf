@@ -3,6 +3,12 @@ provider "aws" {
   region = var.region
 }
 
+provider "kubernetes" {
+  host                   = aws_eks_cluster.rattle_cluster.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.rattle_cluster.cluster_ca_certificate)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
 # VPC Creation
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
@@ -136,3 +142,75 @@ resource "aws_eks_cluster" "rattle_cluster" {
     aws_iam_role_policy_attachment.eks_cluster_policy
   ]
 }
+
+
+##### TASK 3 #######
+
+# Creates k8s namespace 'exercise'
+resource "kubernetes_namespace" "exercise" {
+  metadata {
+    name = "exercise"
+  }
+}
+
+# Creates Deployment
+resource "kubernetes_deployment" "exercise_deployment" {
+  metadata {
+    name      = "exercise-deployment"
+    namespace = kubernetes_namespace.exercise.metadata[0].name
+  }
+
+  spec {
+    replicas = 2
+
+    selector {
+      match_labels = {
+        app = "exercise"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "exercise"
+        }
+      }
+
+      spec {
+        container {
+          name  = "nginx"
+          image = "nginx:latest"  # Replace this with your built image
+          ports {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+}
+
+# Exposes the Deployment using a service LB
+
+resource "kubernetes_service" "exercise_service" {
+  metadata {
+    name      = "exercise-service"
+    namespace = kubernetes_namespace.exercise.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      app = "exercise"
+    }
+
+    ports {
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+
+    type = "LoadBalancer"
+  }
+}
+
+
+

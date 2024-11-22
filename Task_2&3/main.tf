@@ -179,7 +179,7 @@ resource "kubernetes_deployment" "exercise_deployment" {
       spec {
         container {
           name  = "nginx"
-          image = "nginx:latest"  # Replace this with your built image
+          image = "nginx:latest"
           ports {
             container_port = 80
           }
